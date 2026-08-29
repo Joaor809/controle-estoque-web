@@ -1,0 +1,13 @@
+body{
+    background-color: var(--bg-color);
+}
+
+.container{
+    display: grid;
+    grid-template-columns: 15% 1fr;
+}
+.cards-container{
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}

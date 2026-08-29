@@ -1,0 +1,17 @@
+.navbar{
+    width: 180px;
+    min-height: 100vh;
+    background-color: var(--menu);
+    display: flex;
+    flex-direction: column;
+}
+.navbar img{
+    width: 100%;
+    height: 7rem;
+}
+.nav-links{
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
