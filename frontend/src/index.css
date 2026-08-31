@@ -3,6 +3,7 @@
   --menu: #468f46;
   --btn-color: #266231;
   --bg-card: #fff;
+  --cart-card: hsl(0, 2%, 90%);
 }
 *{
   margin: 0;

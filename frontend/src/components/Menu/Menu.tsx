@@ -1,15 +1,15 @@
 import "./Menu.css";
-import Button from "../Button/Button";
+import ButtonLink from "../ButtonLink/ButtonLink";
 
 function Menu(){
     return(
         <nav className="navbar">
             <img src="../../public/logo.png" alt="Logo" />
             <div className="nav-links">
-                <Button linkRoute="/" btnName="Início"/>
-                <Button linkRoute="/produtos" btnName="Produtos"/>
-                <Button linkRoute="/" btnName="Vender"/>
-                <Button linkRoute="/" btnName="Sair"/>
+                <ButtonLink linkRoute="/" btnName="Início"/>
+                <ButtonLink linkRoute="/produtos" btnName="Produtos"/>
+                <ButtonLink linkRoute="/vender" btnName="Vender"/>
+                <ButtonLink linkRoute="/" btnName="Sair"/>
             </div>
         </nav>
     );

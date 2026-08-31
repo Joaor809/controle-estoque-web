@@ -1,11 +1,10 @@
-import { Link } from "react-router-dom";
 import "./Button.css";
 
-function Button(props){
+function Button({ typeButton = "button", className = "", btnName, onClick}){
     return(
-        <Link className="btn" to={props.linkRoute}>
-            {props.btnName}
-        </Link>
+        <button type={typeButton} className={`btn ${className}`} onClick={onClick}>
+            {btnName}
+        </button>
     );
 }
 
