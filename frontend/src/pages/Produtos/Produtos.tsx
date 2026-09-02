@@ -109,9 +109,9 @@ function Produtos() {
     }, []);
 
     return (
-        <div className="container">
+        <div className="container-produtos">
             <Menu />
-            <div className="content">
+            <div className="content-produtos">
                 <header>
                     <div className="header-info">
                         <h2>Produtos</h2>

@@ -1,79 +1,50 @@
-import Button from "../../components/Button/Button";
-import CartCard from "../../components/CartCard/CartCard";
-import Menu from "../../components/Menu/Menu";
 import "./Vendas.css";
+import Menu from "../../components/Menu/Menu";
+import Button from "../../components/Button/Button";
 import { useEffect, useState } from "react";
 
 function Vendas() {
-    const [produtos, setProdutos] = useState([]);
-    const [idProduto, setIdProduto] = useState("");
-    const [quantidade, setQuantidade] = useState("");
-    const [cart, setCart] = useState([]);
+    const [sale, setSale] = useState([]);
 
-    async function buscarProdutos() {
-        try {
-            const response = await fetch("http://localhost:3000/produtos");
-            setProdutos(await response.json());
-        } catch (erro) {
-            console.error("Erro ao buscar produtos:", erro);
-        }
+    async function relatorioVendas() {
+        const response = await fetch("http://localhost:3000/vendas");
+        const data = await response.json();
+
+        setSale(data)
     }
+    async function produtosVendidos(){
 
-    function adicionarCarrinho() {
-        const produto = produtos.find(
-            produto => produto.idProduto === Number(idProduto)
-        );
-
-        if (!produto){
-            alert("Produto não encontrado!");
-        } else{
-            alert(produto.nome)
-        }
     }
-
     useEffect(() => {
-        buscarProdutos();
+        relatorioVendas();
     }, [])
-
     return (
-        <div className="container">
+        <div className="container-vendas">
             <Menu />
-            <div className="table-products">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>NOME</th>
-                            <th>MARCA</th>
-                            <th>CATEGORIA</th>
-                            <th>PREÇO</th>
-                            <th>QUANTIDADE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {produtos.map((produto) => (
-                            <tr key={produto.idProduto}>
-                                <td>{produto.idProduto}</td>
-                                <td>{produto.nome}</td>
-                                <td>{produto.marca}</td>
-                                <td>{produto.categoria}</td>
-                                <td>R$ {produto.preco}</td>
-                                <td>{produto.quantidade}</td>
+            <div className="content-vendas">
+                <div className="table-sale">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID VENDA</th>
+                                <th>DATA</th>
+                                <th>VALOR</th>
+                                <th>AÇÕES</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            <div className="shopping-cart">
-                <div className="products-cart">
-                    <CartCard nameProduct="Arroz" priceProduct="149,90" amountProduct="14" />
-                </div>
-                <div className="add-product">
-                    <div className="inputs-add">
-                        <input type="text" placeholder="ID" value={idProduto} onChange={(e) => setIdProduto(e.target.value)} />
-                        <input type="text" placeholder="Qtd" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} />
-                    </div>
-                    <Button btnName="Adicionar ao carrinho" onClick={adicionarCarrinho}/>
+                        </thead>
+                        <tbody>
+                            {sale.map((item) => {
+                                return (
+                                    <tr key={item.idVenda}>
+                                        <td>{item.idVenda}</td>
+                                        <td>{new Date(item.data).toLocaleDateString("pt-BR")}</td>
+                                        <td>R$ {Number(item.valorTotal).toFixed(2)}</td>
+                                        <td><Button btnName="Ver produtos vendidos" onClick={produtosVendidos}/></td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

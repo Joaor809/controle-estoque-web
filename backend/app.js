@@ -103,8 +103,44 @@ app.get("/qtdProdutos", async (req, res) => {
 app.get("/qtdProdutosBaixa", async (req, res) => {
     const [resultado] = await conn.query("SELECT COUNT(*) AS quantidade FROM produtos WHERE quantidade <= 40");
     res.json(resultado[0].quantidade);
-})
+});
 
+app.post("/vendas", async (req, res) => {
+    console.log("BODY RECEBIDO:", req.body);
+    const { produtos, valorTotal } = req.body;
+    try {
+        const [venda] = await conn.query("INSERT INTO vendas(valorTotal) VALUES (?)", [valorTotal]);
+        const idVenda = venda.insertId;
+
+        for (const produto of produtos) {
+            await conn.query("INSERT INTO item_venda (idVenda, idProduto, quantidade, preco) VALUES (?, ?, ?, ?)", [idVenda, produto.idProduto, produto.quantidade, produto.preco]);
+
+            await conn.query("UPDATE produtos SET quantidade = quantidade - ? WHERE idProduto = ?", [produto.quantidade, produto.idProduto]);
+        }
+        res.status(201).json({
+            mensagem: "Venda realizada com sucesso!",
+            idVenda
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            erro: "Erro ao realizar venda"
+        });
+    }
+});
+
+app.get("/vendas", async (req, res) => {
+    try{
+        const [vendas] = await conn.query("SELECT idVenda, data, valorTotal FROM vendas ORDER BY data DESC");
+        res.json(vendas);
+    } catch (error) {
+        res.json([])
+    }
+});
+app.get("/qtdVendas", async (req, res) => {
+    const [qtdVendas] = await conn.query("SELECT COUNT(*) AS quantidade FROM vendas");
+    res.json(qtdVendas[0].quantidade)
+})
 app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000");
 });

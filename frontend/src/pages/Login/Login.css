@@ -1,0 +1,64 @@
+.container-login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    min-height: 100vh;
+}
+.card-login{
+    width: 25vw;
+    min-height: 30vh;
+    background-color: var(--bg-card);
+    padding: 1rem;
+    border-radius: 10px;
+    transition: all .4s ease;
+}
+.card-login:hover{
+    box-shadow: 0 2px 4px 2px gray;
+    transform: translateY(-4px);
+}
+.form-info{
+    padding: 1rem;
+}
+.form-info h2{
+    text-align: center;
+}
+.form-info p{
+    font-weight: bold;
+    color: gray;
+    font-size: 14px;
+}
+
+.form-group{
+    margin: 0 auto;
+    margin-top: 1rem;
+    width: 80%;
+}
+.form-group input{
+    width: 100%;
+    letter-spacing: 1px;
+}
+.form-group button{
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+}
+.btn-login{
+    margin: 2rem auto;
+}
+.password-group{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-group input{
+    flex: 1;
+}
+
+.password-group button{
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+}

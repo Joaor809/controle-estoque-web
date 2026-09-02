@@ -1,11 +1,13 @@
 body{
     background-color: var(--bg-color);
 }
-.container{
-    display: grid;
-    grid-template-columns: 180px 1fr;
+.container-produtos{
+    display: flex;
 }
 
+.content-produtos{
+    width: 100%;
+}
 header{
     display: flex;
     justify-content: space-between;

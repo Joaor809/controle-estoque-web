@@ -5,6 +5,7 @@ import "./Dashboard.css"
 function Dashboard() {
     const [qtdProdutos, setQtdProdutos] = useState(0);
     const [qtdProdutosBaixo, setQtdProdutosBaixo] = useState(0)
+    const [qtdVendas, setQtdVendas] = useState(0)
 
     async function buscarQtdProdutos() {
         const response = await fetch("http://localhost:3000/qtdProdutos");
@@ -16,15 +17,21 @@ function Dashboard() {
         const data = await response.json()
         setQtdProdutosBaixo(data)
     }
+    async function buscarQtdVendas(){
+        const response = await fetch("http://localhost:3000/qtdVendas");
+        const data = await response.json()
+        setQtdVendas(data)
+    }
 
     useEffect(() => {
         buscarQtdProdutos();
         buscarQtdProdutosBaixo();
+        buscarQtdVendas();
     }, []);
     return (
-        <div className="container">
+        <div className="container-dashboard">
             <Menu />
-            <div className="content">
+            <div className="content-dashboard">
                 <header>
                     <div className="header-info">
                         <h2>Dashboard</h2>
@@ -35,7 +42,7 @@ function Dashboard() {
                     <div className="cards-container">
                         <CardDashboard icon="bi bi-box-seam" cardName="Produtos" countInfo={qtdProdutos} />
                         <CardDashboard icon="bi bi-exclamation-triangle" cardName="Estoque baixo" countInfo="42" countInfo={qtdProdutosBaixo}/>
-                        <CardDashboard icon="bi bi-cart" cardName="Vendas" countInfo="42" />
+                        <CardDashboard icon="bi bi-cart" cardName="Vendas" countInfo={qtdVendas} />
                     </div>
                 </main>
             </div>

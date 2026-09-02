@@ -3,12 +3,12 @@ use mercearia_web;
 
 create table categorias(
     idCategoria int auto_increment primary key,
-    nome varchar(20) unique not null
+    nome varchar(30) unique not null
 );
 
 create table produtos(
     idProduto int auto_increment primary key,
-    nome varchar(50) not null,
+    nome varchar(100) not null,
     marca varchar(50) not null,
     idCategoria int not null,
     preco decimal(10,2) not null,

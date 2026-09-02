@@ -2,9 +2,11 @@ body{
     background-color: var(--bg-color);
 }
 
-.container{
-    display: grid;
-    grid-template-columns: 15% 1fr;
+.container-dashboard{
+    display: flex;
+}
+.content-dashboard{
+    width: 100%;
 }
 .cards-container{
     display: flex;

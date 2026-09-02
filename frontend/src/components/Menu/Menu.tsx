@@ -9,6 +9,7 @@ function Menu(){
                 <ButtonLink linkRoute="/" btnName="Início"/>
                 <ButtonLink linkRoute="/produtos" btnName="Produtos"/>
                 <ButtonLink linkRoute="/vender" btnName="Vender"/>
+                <ButtonLink linkRoute="/vendas" btnName="Relatório de vendas"/>
                 <ButtonLink linkRoute="/" btnName="Sair"/>
             </div>
         </nav>
