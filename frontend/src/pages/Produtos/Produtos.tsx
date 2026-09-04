@@ -19,9 +19,15 @@ function Produtos() {
     const [novoPreco, setNovoPreco] = useState("");
     const [novaQuantidade, setNovaQuantidade] = useState("");
 
+    const token = localStorage.getItem("token");
+
     async function buscarCategorias() {
         try {
-            const response = await fetch("http://localhost:3000/categorias");
+            const response = await fetch("http://localhost:3000/categorias", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setCategorias(await response.json());
         } catch (erro) {
             console.error("Erro ao buscar categorias:", erro);
@@ -30,7 +36,11 @@ function Produtos() {
 
     async function buscarProdutos() {
         try {
-            const response = await fetch("http://localhost:3000/produtos");
+            const response = await fetch("http://localhost:3000/produtos", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setProdutos(await response.json());
         } catch (erro) {
             console.error("Erro ao buscar produtos:", erro);
@@ -40,7 +50,11 @@ function Produtos() {
     async function buscarProduto() {
         if (!busca.trim()) return;
         try {
-            const response = await fetch(`http://localhost:3000/produtos/buscar?nome=${encodeURIComponent(busca)}`);
+            const response = await fetch(`http://localhost:3000/produtos/buscar?nome=${encodeURIComponent(busca)}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setResultadoBusca(await response.json());
             setModalBusca(true);
         } catch (erro) {

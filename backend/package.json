@@ -20,5 +20,8 @@
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.24.2",
     "nodemon": "^3.1.14"
+  },
+  "devDependencies": {
+    "eslint": "^10.9.1"
   }
 }

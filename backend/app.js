@@ -1,13 +1,16 @@
 import express from "express";
 import cors from "cors";
 import conn from "./db.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import verificarToken from "./middleware/verificarToken.js"
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.get("/categorias", async (req, res) => {
+app.get("/categorias", verificarToken, async (req, res) => {
     try {
         const [response] = await conn.query("SELECT * FROM categorias");
         res.json(response);
@@ -17,7 +20,7 @@ app.get("/categorias", async (req, res) => {
     }
 });
 
-app.get("/produtos", async (req, res) => {
+app.get("/produtos", verificarToken, async (req, res) => {
     try {
         const sql = `
             SELECT p.idProduto, p.nome, p.marca, c.nome AS categoria, p.preco, p.quantidade
@@ -33,7 +36,7 @@ app.get("/produtos", async (req, res) => {
     }
 });
 
-app.get("/produtos/buscar", async (req, res) => {
+app.get("/produtos/buscar", verificarToken, async (req, res) => {
     try {
         const { nome } = req.query;
         const sql = `
@@ -50,7 +53,7 @@ app.get("/produtos/buscar", async (req, res) => {
     }
 });
 
-app.post("/produtos", async (req, res) => {
+app.post("/produtos", verificarToken, async (req, res) => {
     try {
         const { nome, marca, preco, quantidade, categoria } = req.body;
 
@@ -71,7 +74,7 @@ app.post("/produtos", async (req, res) => {
     }
 });
 
-app.put("/produtos/:id", async (req, res) => {
+app.put("/produtos/:id", verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const { preco, quantidade } = req.body;
@@ -95,17 +98,17 @@ app.put("/produtos/:id", async (req, res) => {
     }
 });
 
-app.get("/qtdProdutos", async (req, res) => {
+app.get("/qtdProdutos", verificarToken, async (req, res) => {
     const [resultado] = await conn.query("SELECT COUNT(*) AS quantidade FROM produtos");
     res.json(resultado[0].quantidade);
 });
 
-app.get("/qtdProdutosBaixa", async (req, res) => {
+app.get("/qtdProdutosBaixa", verificarToken, async (req, res) => {
     const [resultado] = await conn.query("SELECT COUNT(*) AS quantidade FROM produtos WHERE quantidade <= 40");
     res.json(resultado[0].quantidade);
 });
 
-app.post("/vendas", async (req, res) => {
+app.post("/vendas", verificarToken, async (req, res) => {
     console.log("BODY RECEBIDO:", req.body);
     const { produtos, valorTotal } = req.body;
     try {
@@ -129,18 +132,55 @@ app.post("/vendas", async (req, res) => {
     }
 });
 
-app.get("/vendas", async (req, res) => {
-    try{
+app.get("/vendas", verificarToken, async (req, res) => {
+    try {
         const [vendas] = await conn.query("SELECT idVenda, data, valorTotal FROM vendas ORDER BY data DESC");
         res.json(vendas);
     } catch (error) {
         res.json([])
     }
 });
-app.get("/qtdVendas", async (req, res) => {
+app.get("/qtdVendas", verificarToken, async (req, res) => {
     const [qtdVendas] = await conn.query("SELECT COUNT(*) AS quantidade FROM vendas");
     res.json(qtdVendas[0].quantidade)
 })
+
+app.post("/login", async (req, res) => {
+    try {
+        const { cpfNumeros, senha } = req.body;
+        const [users] = await conn.query("SELECT * FROM usuarios WHERE cpf = ?", [cpfNumeros]);
+        if (users.length === 0) {
+            return res.status(401).json({ erro: "CPF ou senha inválidos" });
+        }
+        const user = users[0];
+        const senhaCorreta = await bcrypt.compare(senha, user.senha);
+
+        if (!senhaCorreta) {
+            return res.status(401).json({ erro: "Email ou senha inválidos" });
+        }
+        const token = jwt.sign(
+            { id: user.idUsuario },
+            "segredo-do-sistema",
+            { expiresIn: "1h" }
+        );
+        res.json({
+            mensagem: "Login realizado",
+            token,
+            usuario: {
+                id: user.idUsuario,
+                nome: user.nome,
+                cpf: user.cpf,
+                email: user.email,
+                telefone: user.telefone
+
+            }
+        });
+    } catch (erro) {
+        console.error(erro);
+        res.status(500).json({ erro: "Erro no servidor" });
+    }
+});
+
 app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000");
 });

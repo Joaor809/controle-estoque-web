@@ -11,9 +11,15 @@ function Vendas() {
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
 
+    const token = localStorage.getItem("token");
+
     async function buscarProdutos() {
         try {
-            const response = await fetch("http://localhost:3000/produtos");
+            const response = await fetch("http://localhost:3000/produtos", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setProdutos(await response.json());
         } catch (erro) {
             console.error("Erro ao buscar produtos:", erro);

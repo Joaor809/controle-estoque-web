@@ -10,7 +10,7 @@ function Menu(){
                 <ButtonLink linkRoute="/produtos" btnName="Produtos"/>
                 <ButtonLink linkRoute="/vender" btnName="Vender"/>
                 <ButtonLink linkRoute="/vendas" btnName="Relatório de vendas"/>
-                <ButtonLink linkRoute="/" btnName="Sair"/>
+                <ButtonLink linkRoute="/sair" btnName="Sair"/>
             </div>
         </nav>
     );

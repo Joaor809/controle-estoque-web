@@ -31,6 +31,16 @@ create table item_venda(
     foreign key (idVenda) references vendas(idVenda),
     foreign key (idProduto) references produtos(idProduto)
 );
+
+create table usuarios(
+    idUsuario int auto_increment primary key,
+    nome varchar(150) not null,
+    cpf char(11) not null,
+    email varchar(150) not null,
+    telefone varchar(20) not null,
+    senha varchar(150) not null
+);
+
 INSERT INTO categorias (nome) VALUES
 ('Alimentos'),
 ('Bebidas'),
@@ -121,3 +131,6 @@ INSERT INTO produtos (nome, marca, idCategoria, preco, quantidade) VALUES
 
 ('Carvão Vegetal 3kg', 'Carvão Brasil', 20, 15.90, 10),
 ('Fósforo 10 Caixas', 'Fiat Lux', 20, 4.49, 25);
+
+use mercearia_web;
+desc usuario;

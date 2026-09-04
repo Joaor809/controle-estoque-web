@@ -6,8 +6,14 @@ import { useEffect, useState } from "react";
 function Vendas() {
     const [sale, setSale] = useState([]);
 
+    const token = localStorage.getItem("token");
+
     async function relatorioVendas() {
-        const response = await fetch("http://localhost:3000/vendas");
+        const response = await fetch("http://localhost:3000/vendas", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         const data = await response.json();
 
         setSale(data)

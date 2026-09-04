@@ -7,18 +7,32 @@ function Dashboard() {
     const [qtdProdutosBaixo, setQtdProdutosBaixo] = useState(0)
     const [qtdVendas, setQtdVendas] = useState(0)
 
+    const token = localStorage.getItem("token");
+
     async function buscarQtdProdutos() {
-        const response = await fetch("http://localhost:3000/qtdProdutos");
+        const response = await fetch("http://localhost:3000/qtdProdutos", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         const data = await response.json();
         setQtdProdutos(data);
     }
-    async function buscarQtdProdutosBaixo(){
-        const response = await fetch("http://localhost:3000/qtdProdutosBaixa");
+    async function buscarQtdProdutosBaixo() {
+        const response = await fetch("http://localhost:3000/qtdProdutosBaixa", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         const data = await response.json()
         setQtdProdutosBaixo(data)
     }
     async function buscarQtdVendas(){
-        const response = await fetch("http://localhost:3000/qtdVendas");
+        const response = await fetch("http://localhost:3000/qtdVendas", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         const data = await response.json()
         setQtdVendas(data)
     }
@@ -41,7 +55,7 @@ function Dashboard() {
                 <main>
                     <div className="cards-container">
                         <CardDashboard icon="bi bi-box-seam" cardName="Produtos" countInfo={qtdProdutos} />
-                        <CardDashboard icon="bi bi-exclamation-triangle" cardName="Estoque baixo" countInfo="42" countInfo={qtdProdutosBaixo}/>
+                        <CardDashboard icon="bi bi-exclamation-triangle" cardName="Estoque baixo" countInfo={qtdProdutosBaixo}/>
                         <CardDashboard icon="bi bi-cart" cardName="Vendas" countInfo={qtdVendas} />
                     </div>
                 </main>

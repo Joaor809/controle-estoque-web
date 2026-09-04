@@ -17,21 +17,37 @@ function Login() {
 
         setCpf(valor);
     }
-    async function login(event){
+
+    async function login(event) {
         event.preventDefault();
 
         const cpfNumeros = cpf.replace(/\D/g, "");
 
         const response = await fetch("http://localhost:3000/login", {
-            method: "Post",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                cpf,
+                cpfNumeros,
                 senha
             })
-        })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.erro);
+            return;
+        }
+
+        console.log("Salvando token...");
+        console.log("Token:", data.token);
+        console.log("Usuário:", data.usuario);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("usuario", JSON.stringify(data.usuario));
+
+        window.location.href = "/";
     }
     return (
         <div className="container-login">
@@ -48,7 +64,7 @@ function Login() {
                     <div className="form-group">
                         <label>Digite sua senha:</label>
                         <div className="password-group">
-                            <input type={mostrarSenha ? "text" : "password"} value={senha} onChange={event => setSenha(event.target.value)} placeholder="Senha"/>
+                            <input type={mostrarSenha ? "text" : "password"} value={senha} onChange={event => setSenha(event.target.value)} placeholder="Senha" />
                             <button type="button" onClick={() => setMostrarSenha(!mostrarSenha)}>
                                 <i className={mostrarSenha ? "bi bi-eye-slash" : "bi bi-eye"}></i>
                             </button>
