@@ -3,24 +3,23 @@ import jwt from "jsonwebtoken";
 function verificarToken(req, res, next) {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader) {
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
         return res.status(401).json({
-            erro: "Token não informado"
+            erro: "Token não fornecido"
         });
     }
 
-    const token = authHeader.split(" ")[1];
-
     try {
-        const usuario = jwt.verify(
-            token,
-            "segredo-do-sistema"
-        );
+        const usuario = jwt.verify(token, "segredo-do-sistema");
 
         req.usuario = usuario;
 
         next();
     } catch (erro) {
+        console.error(erro);
+
         return res.status(401).json({
             erro: "Token inválido ou expirado"
         });

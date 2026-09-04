@@ -53,7 +53,7 @@ app.get("/produtos/buscar", verificarToken, async (req, res) => {
     }
 });
 
-app.post("/produtos", verificarToken, async (req, res) => {
+app.post("/produtos", async (req, res) => {
     try {
         const { nome, marca, preco, quantidade, categoria } = req.body;
 
@@ -108,7 +108,7 @@ app.get("/qtdProdutosBaixa", verificarToken, async (req, res) => {
     res.json(resultado[0].quantidade);
 });
 
-app.post("/vendas", verificarToken, async (req, res) => {
+app.post("/vendas", async (req, res) => {
     console.log("BODY RECEBIDO:", req.body);
     const { produtos, valorTotal } = req.body;
     try {
