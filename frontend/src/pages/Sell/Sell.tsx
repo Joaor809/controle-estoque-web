@@ -115,7 +115,7 @@ function Vendas() {
                     <tbody>
                         {products.map((product) => (
                             <tr key={product.idProduto}>
-gi                                <td>{product.nome}</td>
+                                <td>{product.nome}</td>
                                 <td>{product.marca}</td>
                                 <td>{product.categoria}</td>
                                 <td>R$ {product.preco}</td>
