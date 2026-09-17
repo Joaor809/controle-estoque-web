@@ -105,7 +105,6 @@ function Vendas() {
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>NOME</th>
                             <th>MARCA</th>
                             <th>CATEGORIA</th>
@@ -116,8 +115,7 @@ function Vendas() {
                     <tbody>
                         {products.map((product) => (
                             <tr key={product.idProduto}>
-                                <td>{product.idProduto}</td>
-                                <td>{product.nome}</td>
+gi                                <td>{product.nome}</td>
                                 <td>{product.marca}</td>
                                 <td>{product.categoria}</td>
                                 <td>R$ {product.preco}</td>

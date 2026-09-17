@@ -6,17 +6,17 @@
 
 .container-sell {
     display: grid;
-    grid-template-columns: 15% minmax(0, 60%) 25%;
+    grid-template-columns: 15% 60% 25%;
     width: 100%;
     min-height: 100vh;
     overflow: hidden;
+    gap: 2rem;
 }
 
 /* TABELA */
 
 .container-sell .table-products {
-    width: 100%;
-    min-width: 0;
+    width: 100v;
     margin-top: 2rem;
     padding: 0 20px;
     overflow-x: auto;
@@ -25,7 +25,6 @@
 
 .container-sell .table-products table {
     width: 100%;
-    min-width: 750px;
     border-collapse: collapse;
     box-shadow: 0 2px 4px 2px gray;
 }
