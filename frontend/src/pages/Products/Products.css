@@ -1,22 +1,34 @@
-body{
-    background-color: var(--bg-color);
-}
-.container-produtos{
-    display: flex;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.content-produtos{
+body {
+    background-color: var(--bg-color);
+}
+
+.container-products {
+    display: flex;
     width: 100%;
 }
-header{
+
+.content-products {
+    flex: 1;
+    min-width: 0;
+}
+
+header {
     display: flex;
     justify-content: space-between;
     background-color: var(--bg-card);
     padding: 1rem;
 }
-header > .btn{
-    margin-right: 1rem;
+
+header>.btn {
+    margin-right: 1vw;
 }
+
 .modal-form {
     position: fixed;
     top: 0;
@@ -27,9 +39,9 @@ header > .btn{
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
     animation: aparecer 0.3s ease;
 }
+
 @keyframes aparecer {
     from {
         opacity: 0;
@@ -39,6 +51,7 @@ header > .btn{
         opacity: 1;
     }
 }
+
 .modal-form form {
     position: relative;
     width: 450px;
@@ -47,11 +60,12 @@ header > .btn{
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
-.modal-form form > .btn-close{
+
+.modal-form form>.btn-close {
     margin-right: 1rem;
     width: 50px;
     height: 50px;
-    font-size: 18px ;
+    font-size: 18px;
 }
 
 .modal-form h3 {
@@ -59,6 +73,21 @@ header > .btn{
     font-size: 24px;
     text-align: center;
     color: #333;
+}
+
+.modal-form-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-form-info h3 {
+    width: 100%;
+}
+
+.modal-form-info .btn-close {
+    width: 50px;
+    height: 50px;
 }
 
 .form-group {
@@ -76,7 +105,6 @@ header > .btn{
 
 .form-group input {
     width: 100%;
-    box-sizing: border-box;
     padding: 11px 12px;
     border: 1px solid #ccc;
     border-radius: 7px;
@@ -89,7 +117,8 @@ header > .btn{
     border-color: #63ce85;
     box-shadow: 0 0 0 3px rgba(99, 206, 133, 0.15);
 }
-.form-group select{
+
+.form-group select {
     width: 100%;
     padding: 11px 12px;
     border: 1px solid #ccc;
@@ -98,6 +127,7 @@ header > .btn{
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
+
 .form-group select:focus {
     border-color: #63ce85;
     box-shadow: 0 0 0 3px rgba(99, 206, 133, 0.15);
@@ -105,29 +135,38 @@ header > .btn{
 
 
 /* TABELA DE PRODUTOS */
-.table-products{
-    display: flex;
-    justify-content: center;
+.table-products {
+    width: 100%;
+    max-width: 100%;
     margin-top: 2rem;
+    overflow-x: auto;
 }
+
 .table-products table {
+    /* A tabela deve iniciar na borda esquerda do contêiner rolável. */
+    width: max-content;
+    min-width: 100%;
     border-collapse: collapse;
     box-shadow: 0 2px 4px 5px gray;
 }
-.table-products table thead th{
+
+.table-products table thead th {
     background-color: cadetblue;
     padding: 8px;
     color: white;
     text-shadow: 0 2px 3px black;
 }
-.table-products table tbody{
+
+.table-products table tbody {
     text-align: center;
     background-color: var(--bg-card);
     padding: 6px;
 }
+
 .table-products table th {
     padding: 10px;
 }
+
 .table-products th,
 .table-products td {
     border: none;
@@ -136,25 +175,28 @@ header > .btn{
 }
 
 /* CARD DE BUSCA */
-.card-search{
-    display: flex;
-    margin: 0 auto;
+.card-search {
+    margin: 1rem auto 0;
     background-color: var(--bg-card);
-    margin-top: 1rem;
     border-radius: 10px;
     width: 20rem;
-    justify-content: center;
     padding: 14px;
-    gap: 20px;
 }
+
+.card-search form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .card-search input {
     width: 100%;
-    box-sizing: border-box;
     padding: 11px 12px;
     border: 1px solid #ccc;
     border-radius: 7px;
     font-size: 15px;
     outline: none;
+    box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -163,10 +205,8 @@ header > .btn{
     box-shadow: 0 0 0 3px rgba(99, 206, 133, 0.15);
 }
 
+/* MODAL DE BUSCA */
 
-/* MODAL BUSCA */
-/* MODAL BUSCA */
-/* MODAL BUSCA */
 .modal-search {
     position: fixed;
     top: 0;
@@ -177,7 +217,6 @@ header > .btn{
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
     animation: aparecer 0.3s ease;
 }
 
@@ -192,6 +231,19 @@ header > .btn{
     overflow-y: auto;
 }
 
+.modal-search-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.modal-search-info .btn-close-search {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
 .resultado {
     margin: 1rem 0;
     padding: 15px;
@@ -199,12 +251,45 @@ header > .btn{
     border-radius: 8px;
 }
 
-.resultado p {
+.resultado p {  
     margin: 5px 0;
 }
-.modal-search-content > .btn-close-search{
+
+.modal-search-content>.btn-close-search {
     margin-right: 1rem;
     width: 50px;
     height: 50px;
-    font-size: 18px ;
+    font-size: 18px;
 }
+
+@media (max-width: 768px) {
+    .navbar {
+        width: 100%;
+    }
+
+    .container-products {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .content-products {
+        width: 100%;
+        min-width: 0;
+    }
+
+    header {
+        width: 100%;
+    }
+
+    .table-products {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .table-products table {
+        width: max-content;
+        min-width: 100%;
+    }
+}
+

@@ -27,6 +27,7 @@
     font-weight: bold;
     color: gray;
     font-size: 14px;
+    text-align: center;
 }
 
 .form-group{
@@ -61,4 +62,10 @@
     background: none;
     cursor: pointer;
     font-size: 18px;
+}
+
+@media(max-width: 768px){
+    .card-login{
+        width: 90vw;
+    }
 }

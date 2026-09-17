@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import CardDashboard from "../../components/CardDashboard/CardDashboard";
 import Menu from "../../components/Menu/Menu";
 import "./Dashboard.css"
+import apagarToken from "../../services/deleteToken";
+
 function Dashboard() {
     const [qtdProdutos, setQtdProdutos] = useState(0);
     const [qtdProdutosBaixo, setQtdProdutosBaixo] = useState(0)
@@ -10,29 +12,32 @@ function Dashboard() {
     const token = localStorage.getItem("token");
 
     async function buscarQtdProdutos() {
-        const response = await fetch("http://localhost:3000/qtdProdutos", {
+        const response = await fetch("http://localhost:3000/quantityProducts", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
+        if (apagarToken(response)) return;
         const data = await response.json();
         setQtdProdutos(data);
     }
     async function buscarQtdProdutosBaixo() {
-        const response = await fetch("http://localhost:3000/qtdProdutosBaixa", {
+        const response = await fetch("http://localhost:3000/lowQuantityProducts", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
+        if (apagarToken(response)) return;
         const data = await response.json()
         setQtdProdutosBaixo(data)
     }
     async function buscarQtdVendas(){
-        const response = await fetch("http://localhost:3000/qtdVendas", {
+        const response = await fetch("http://localhost:3000/quantitySales", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
+        if (apagarToken(response)) return;
         const data = await response.json()
         setQtdVendas(data)
     }

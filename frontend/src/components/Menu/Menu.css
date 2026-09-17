@@ -1,4 +1,4 @@
-.navbar{
+.navbar {
     width: 180px;
     min-height: 100vh;
     background-color: var(--menu);
@@ -6,13 +6,89 @@
     flex-direction: column;
     text-align: center;
 }
-.navbar img{
+
+.navbar img {
     width: 100%;
     height: 7rem;
 }
-.nav-links{
+
+.nav-links {
     margin-top: 2rem;
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+.modalLogout {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: appear .4s ease;
+    background-color: var(--bg-card);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 4px 3px gray;
+}
+
+@keyframes appear {
+    from{
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    to{
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.modalLogout button{
+    margin: 1rem;
+    width: 60px;
+    height: 30px;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    transition: all .4s ease;
+}
+.yes{
+    background: #770a0a;
+}
+.no{
+    background-color: #3333d1;
+}
+.yes:hover{
+    box-shadow: 0 2px 4px 3px lightsalmon;
+    transform: translateY(-2px);
+}
+.no:hover{
+    box-shadow: 0 2px 4px 3px lightblue;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        width: 100%;
+        min-height: auto;
+        padding: 10px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    .navbar img {
+        width: 50px;
+        height: auto;
+        object-fit: contain;
+    }
+    .nav-links {
+        margin-top: 0;
+        margin-left: 0;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
 }

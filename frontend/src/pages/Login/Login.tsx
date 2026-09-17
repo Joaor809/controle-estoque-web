@@ -4,10 +4,10 @@ import { useState } from "react";
 
 function Login() {
     const [cpf, setCpf] = useState("");
-    const [senha, setSenha] = useState("");
-    const [mostrarSenha, setMostrarSenha] = useState(false);
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
-    function formatarCPF(event) {
+    function formatCpf(event) {
         let valor = event.target.value;
 
         valor = valor.replace(/\D/g, "");
@@ -21,7 +21,7 @@ function Login() {
     async function login(event) {
         event.preventDefault();
 
-        const cpfNumeros = cpf.replace(/\D/g, "");
+        const cpfNumbers = cpf.replace(/\D/g, "");
 
         const response = await fetch("http://localhost:3000/login", {
             method: "POST",
@@ -29,8 +29,8 @@ function Login() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                cpfNumeros,
-                senha
+                cpfNumbers,
+                password
             })
         });
 
@@ -56,22 +56,22 @@ function Login() {
                     <h2>Faça seu login</h2>
                     <p>Faça seu login para entrar no controle de estoque</p>
                 </div>
-                <form>
+                <form onSubmit={login}>
                     <div className="form-group">
                         <label>Digite seu CPF:</label>
-                        <input type="text" name="cpf" id="cpf" placeholder="000.000.000-00" value={cpf} onChange={formatarCPF} />
+                        <input type="text" name="cpf" id="cpf" placeholder="000.000.000-00" value={cpf} onChange={formatCpf} />
                     </div>
                     <div className="form-group">
                         <label>Digite sua senha:</label>
                         <div className="password-group">
-                            <input type={mostrarSenha ? "text" : "password"} value={senha} onChange={event => setSenha(event.target.value)} placeholder="Senha" />
-                            <button type="button" onClick={() => setMostrarSenha(!mostrarSenha)}>
-                                <i className={mostrarSenha ? "bi bi-eye-slash" : "bi bi-eye"}></i>
+                            <input type={showPassword ? "text" : "password"} value={password} onChange={event => setPassword(event.target.value)} placeholder="Senha" />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                                <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i>
                             </button>
                         </div>
                     </div>
                     <div className="btn-login">
-                        <Button btnName="Fazer login" onClick={login}/>
+                        <Button btnName="Fazer login" typeButton="submit"/>
                     </div>
                 </form>
             </div>

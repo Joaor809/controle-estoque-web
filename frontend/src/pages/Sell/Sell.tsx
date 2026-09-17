@@ -1,75 +1,78 @@
 import Button from "../../components/Button/Button";
 import CartCard from "../../components/CartCard/CartCard";
 import Menu from "../../components/Menu/Menu";
-import "./Vender.css";
+import "./Sell.css";
 import { useEffect, useState } from "react";
+import deleteToken from "../../services/deleteToken";
 
 function Vendas() {
-    const [produtos, setProdutos] = useState([]);
-    const [idProduto, setIdProduto] = useState("");
-    const [quantidade, setQuantidade] = useState("");
+    const [products, setProducts] = useState([]);
+    const [idProduct, setIdProduct] = useState("");
+    const [amount, setAmount] = useState("");
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
 
     const token = localStorage.getItem("token");
 
-    async function buscarProdutos() {
+    async function searchProducts() {
         try {
-            const response = await fetch("http://localhost:3000/produtos", {
+            const response = await fetch("http://localhost:3000/products", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-            setProdutos(await response.json());
+            if (deleteToken(response)) return;
+            setProducts(await response.json());
         } catch (erro) {
             console.error("Erro ao buscar produtos:", erro);
         }
     }
 
-    function adicionarCarrinho() {
-        const produto = produtos.find(
-            produto => produto.idProduto === Number(idProduto)
+    function addToCart() {
+        const product = products.find(
+            product => product.idProduto === Number(idProduct)
         );
 
-        if (!produto) {
+        if (!product) {
             alert("Produto não encontrado!");
             return;
         }
-        if (Number(quantidade) <= 0) {
+        if (Number(amount) <= 0) {
             alert("Quantidade inválida");
             return;
         }
-        if (Number(quantidade) > produto.quantidade) {
+        if (Number(amount) > product.quantidade) {
             alert("Quantidade maior que o estoque!");
             return;
         }
         const item = {
-            idProduto: produto.idProduto,
-            nome: produto.nome,
-            preco: produto.preco * Number(quantidade),
-            quantidade: Number(quantidade)
+            idProduto: product.idProduto,
+            nome: product.nome,
+            preco: product.preco * Number(amount),
+            quantidade: Number(amount)
         }
         setCart([...cart, item]);
-        setIdProduto("");
-        setQuantidade("");
-    }
+        setIdProduct("");
+        setAmount("");
+        }
 
-    async function finalizarVenda() {
+    async function completeSale() {
         try {
             if (cart.length === 0) {
                 alert("Nenhum produto adicionado ao carrinho!")
             } else {
-                const response = await fetch("http://localhost:3000/vendas", {
+                const response = await fetch("http://localhost:3000/sales", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
                     },
                     body: JSON.stringify({
-                        produtos: cart,
-                        valorTotal: total
+                        products: cart,
+                        totalPrice: total
                     })
                 });
-                const data = await response.json();
+                if (deleteToken(response)) return;
                 if (!response.ok) {
                     alert("A compra não foi realizada!");
                     return;
@@ -83,24 +86,20 @@ function Vendas() {
         }
     }
 
-    async function relatorioVendas(){
-
-    }
-
     useEffect(() => {
-        buscarProdutos();
+        searchProducts();
     }, [])
     useEffect(() => {
-        const novoTotal = cart.reduce(
-            (total, produto) => total + Number(produto.preco),
+        const newTotal = cart.reduce(
+            (total, product) => total + Number(product.preco),
             0
         );
 
-        setTotal(novoTotal);
+        setTotal(newTotal);
     }, [cart]);
 
     return (
-        <div className="container-vender">
+        <div className="container-sell">
             <Menu />
             <div className="table-products">
                 <table>
@@ -115,14 +114,14 @@ function Vendas() {
                         </tr>
                     </thead>
                     <tbody>
-                        {produtos.map((produto) => (
-                            <tr key={produto.idProduto}>
-                                <td>{produto.idProduto}</td>
-                                <td>{produto.nome}</td>
-                                <td>{produto.marca}</td>
-                                <td>{produto.categoria}</td>
-                                <td>R$ {produto.preco}</td>
-                                <td>{produto.quantidade}</td>
+                        {products.map((product) => (
+                            <tr key={product.idProduto}>
+                                <td>{product.idProduto}</td>
+                                <td>{product.nome}</td>
+                                <td>{product.marca}</td>
+                                <td>{product.categoria}</td>
+                                <td>R$ {product.preco}</td>
+                                <td>{product.quantidade}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -136,17 +135,17 @@ function Vendas() {
                 </div>
                 <div className="add-product">
                     <div className="inputs-add">
-                        <input type="text" placeholder="ID" value={idProduto} onChange={(e) => setIdProduto(e.target.value)} />
-                        <input type="text" placeholder="Qtd" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} />
+                        <input type="text" placeholder="ID" value={idProduct} onChange={(e) => setIdProduct(e.target.value)} />
+                        <input type="text" placeholder="Qtd" value={amount} onChange={(e) => setAmount(e.target.value)} />
                     </div>
-                    <Button btnName="Adicionar ao carrinho" onClick={adicionarCarrinho} />
+                    <Button btnName="Adicionar ao carrinho" onClick={addToCart} />
                 </div>
                 <div className="complete-purchase">
                     <div className="total-price">
                         <h3>Total: R${total.toFixed(2)}</h3>
                     </div>
                     <div className="finish">
-                        <Button btnName="Finalizar compra" onClick={finalizarVenda} />
+                        <Button btnName="Finalizar compra" onClick={completeSale} />
                     </div>
                 </div>
             </div>

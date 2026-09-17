@@ -3,16 +3,22 @@ import jwt from "jsonwebtoken";
 function verificarToken(req, res, next) {
     const authHeader = req.headers.authorization;
 
-    const token = authHeader && authHeader.split(" ")[1];
+    const [tipo, token] = authHeader?.split(" ") ?? [];
 
-    if (!token) {
+    if (tipo !== "Bearer" || !token) {
         return res.status(401).json({
             erro: "Token não fornecido"
         });
     }
 
     try {
-        const usuario = jwt.verify(token, "segredo-do-sistema");
+        const segredoJwt = process.env["jwt-secret"];
+
+        if (!segredoJwt) {
+            throw new Error("Segredo JWT não configurado");
+        }
+
+        const usuario = jwt.verify(token, segredoJwt);
 
         req.usuario = usuario;
 

@@ -133,4 +133,30 @@ INSERT INTO produtos (nome, marca, idCategoria, preco, quantidade) VALUES
 ('Fósforo 10 Caixas', 'Fiat Lux', 20, 4.49, 25);
 
 use mercearia_web;
-desc usuario;
+desc item_venda;
+
+select item_venda.idVenda, produtos.nome, item_venda.quantidade, item_venda.preco
+from item_venda
+inner join produtos on produtos.idProduto = item_venda.idProduto;
+
+
+use mercearia_web;
+create table lotes(
+    idLote int auto_increment primary key,
+    idProduto int not null,
+    quantidade int not null,
+    dataValidade date not null,
+    foreign key (idProduto) references produtos(idProduto)
+);
+
+desc lotes;
+insert into lotes (idProduto, quantidade, dataValidade) values (1, 50, "2027/09/10");
+
+select
+lotes.idLote, produtos.nome, lotes.quantidade, lotes.dataValidade
+from lotes
+inner join produtos on produtos.idProduto = lotes.idProduto;
+
+
+use mercearia_web;
+select * from usuarios;

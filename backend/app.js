@@ -1,16 +1,18 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import conn from "./db.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import verificarToken from "./middleware/verificarToken.js"
+import bcrypt, { hash } from "bcrypt";
+
+dotenv.config();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.get("/categorias", verificarToken, async (req, res) => {
+app.get("/category", async (req, res) => {
     try {
         const [response] = await conn.query("SELECT * FROM categorias");
         res.json(response);
@@ -20,14 +22,14 @@ app.get("/categorias", verificarToken, async (req, res) => {
     }
 });
 
-app.get("/produtos", verificarToken, async (req, res) => {
+app.get("/products", async (req, res) => {
     try {
         const sql = `
-            SELECT p.idProduto, p.nome, p.marca, c.nome AS categoria, p.preco, p.quantidade
-            FROM produtos p
-            JOIN categorias c ON p.idCategoria = c.idCategoria
-            ORDER BY p.idProduto
-        `;
+                SELECT p.idProduto, p.nome, p.marca, c.nome AS categoria, p.preco, p.quantidade
+                FROM produtos p
+                JOIN categorias c ON p.idCategoria = c.idCategoria
+                ORDER BY p.idProduto
+            `;
         const [response] = await conn.query(sql);
         res.json(response);
     } catch (erro) {
@@ -36,37 +38,37 @@ app.get("/produtos", verificarToken, async (req, res) => {
     }
 });
 
-app.get("/produtos/buscar", verificarToken, async (req, res) => {
+app.get("/products/search/:nameProduct", async (req, res) => {
     try {
-        const { nome } = req.query;
+        const { nameProduct } = req.params;
         const sql = `
-            SELECT p.idProduto, p.nome, p.marca, c.nome AS categoria, p.preco, p.quantidade
-            FROM produtos p
-            JOIN categorias c ON p.idCategoria = c.idCategoria
-            WHERE p.nome LIKE ?
-        `;
-        const [resultado] = await conn.query(sql, [`%${nome}%`]);
-        res.json(resultado);
+                SELECT p.idProduto, p.nome, p.marca, c.nome AS categoria, p.preco, p.quantidade
+                FROM produtos p
+                JOIN categorias c ON p.idCategoria = c.idCategoria
+                WHERE p.nome LIKE ?
+            `;
+        const [result] = await conn.query(sql, [`%${nameProduct}%`]);
+        res.json(result);
     } catch (erro) {
         console.error(erro);
         res.status(500).json({ erro: "Erro ao buscar produto" });
     }
 });
 
-app.post("/produtos", async (req, res) => {
+app.post("/products", async (req, res) => {
     try {
-        const { nome, marca, preco, quantidade, categoria } = req.body;
+        const { name, mark, price, amount, category } = req.body;
 
         const sql = `
-            INSERT INTO produtos (nome, marca, preco, quantidade, idCategoria)
-            VALUES (?, ?, ?, ?, ?)
-        `;
+                INSERT INTO produtos (nome, marca, preco, quantidade, idCategoria)
+                VALUES (?, ?, ?, ?, ?)
+            `;
 
-        const [resultado] = await conn.query(sql, [nome, marca, preco, quantidade, categoria]);
+        const [result] = await conn.query(sql, [name, mark, price, amount, category]);
 
         res.status(201).json({
             mensagem: "Produto cadastrado com sucesso",
-            idProduto: resultado.insertId
+            idProduto: result.insertId
         });
     } catch (erro) {
         console.error(erro);
@@ -74,20 +76,20 @@ app.post("/produtos", async (req, res) => {
     }
 });
 
-app.put("/produtos/:id", verificarToken, async (req, res) => {
+app.put("/products/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const { preco, quantidade } = req.body;
+        const { price, amount } = req.body;
 
         const sql = `
-            UPDATE produtos
-            SET preco = ?, quantidade = ?
-            WHERE idProduto = ?
-        `;
+                UPDATE produtos
+                SET preco = ?, quantidade = ?
+                WHERE idProduto = ?
+            `;
 
-        const [resultado] = await conn.query(sql, [preco, quantidade, id]);
+        const [result] = await conn.query(sql, [price, amount, id]);
 
-        if (resultado.affectedRows === 0) {
+        if (result.affectedRows === 0) {
             return res.status(404).json({ erro: "Produto não encontrado" });
         }
 
@@ -98,31 +100,30 @@ app.put("/produtos/:id", verificarToken, async (req, res) => {
     }
 });
 
-app.get("/qtdProdutos", verificarToken, async (req, res) => {
-    const [resultado] = await conn.query("SELECT COUNT(*) AS quantidade FROM produtos");
-    res.json(resultado[0].quantidade);
+app.get("/quantityProducts", async (req, res) => {
+    const [result] = await conn.query("SELECT COUNT(*) AS quantidade FROM produtos");
+    res.json(result[0].quantidade);
 });
 
-app.get("/qtdProdutosBaixa", verificarToken, async (req, res) => {
-    const [resultado] = await conn.query("SELECT COUNT(*) AS quantidade FROM produtos WHERE quantidade <= 40");
-    res.json(resultado[0].quantidade);
+app.get("/lowQuantityProducts", async (req, res) => {
+    const [result] = await conn.query("SELECT COUNT(*) AS quantidade FROM produtos WHERE quantidade <= 40");
+    res.json(result[0].quantidade);
 });
 
-app.post("/vendas", async (req, res) => {
-    console.log("BODY RECEBIDO:", req.body);
-    const { produtos, valorTotal } = req.body;
+app.post("/sales", async (req, res) => {
+    const { products, totalPrice } = req.body;
     try {
-        const [venda] = await conn.query("INSERT INTO vendas(valorTotal) VALUES (?)", [valorTotal]);
-        const idVenda = venda.insertId;
+        const [sale] = await conn.query("INSERT INTO vendas(valorTotal) VALUES (?)", [totalPrice]);
+        const idSale = sale.insertId;
 
-        for (const produto of produtos) {
-            await conn.query("INSERT INTO item_venda (idVenda, idProduto, quantidade, preco) VALUES (?, ?, ?, ?)", [idVenda, produto.idProduto, produto.quantidade, produto.preco]);
+        for (const product of products) {
+            await conn.query("INSERT INTO item_venda (idVenda, idProduto, quantidade, preco) VALUES (?, ?, ?, ?)", [idSale, product.idProduto, product.quantidade, product.preco]);
 
-            await conn.query("UPDATE produtos SET quantidade = quantidade - ? WHERE idProduto = ?", [produto.quantidade, produto.idProduto]);
+            await conn.query("UPDATE produtos SET quantidade = quantidade - ? WHERE idProduto = ?", [product.quantidade, product.idProduto]);
         }
         res.status(201).json({
             mensagem: "Venda realizada com sucesso!",
-            idVenda
+            idSale
         });
     } catch (error) {
         console.error(error);
@@ -132,35 +133,38 @@ app.post("/vendas", async (req, res) => {
     }
 });
 
-app.get("/vendas", verificarToken, async (req, res) => {
+app.get("/sales", async (req, res) => {
     try {
-        const [vendas] = await conn.query("SELECT idVenda, data, valorTotal FROM vendas ORDER BY data DESC");
-        res.json(vendas);
+        const [sales] = await conn.query("SELECT idVenda, data, valorTotal FROM vendas ORDER BY data DESC");
+        res.json(sales);
     } catch (error) {
         res.json([])
     }
 });
-app.get("/qtdVendas", verificarToken, async (req, res) => {
-    const [qtdVendas] = await conn.query("SELECT COUNT(*) AS quantidade FROM vendas");
-    res.json(qtdVendas[0].quantidade)
+app.get("/quantitySales", async (req, res) => {
+    const [salesQuantity] = await conn.query("SELECT COUNT(*) AS quantidade FROM vendas");
+    res.json(salesQuantity[0].quantidade)
 })
 
 app.post("/login", async (req, res) => {
     try {
-        const { cpfNumeros, senha } = req.body;
-        const [users] = await conn.query("SELECT * FROM usuarios WHERE cpf = ?", [cpfNumeros]);
+        const { cpfNumbers, password } = req.body;
+
+        const sql = "SELECT * FROM usuarios WHERE cpf = ?";
+
+        const [users] = await conn.query(sql, [cpfNumbers]);
         if (users.length === 0) {
             return res.status(401).json({ erro: "CPF ou senha inválidos" });
         }
         const user = users[0];
-        const senhaCorreta = await bcrypt.compare(senha, user.senha);
+        const passwordCorrect = await bcrypt.compare(password, user.senha);
 
-        if (!senhaCorreta) {
+        if (!passwordCorrect) {
             return res.status(401).json({ erro: "Email ou senha inválidos" });
         }
         const token = jwt.sign(
             { id: user.idUsuario },
-            "segredo-do-sistema",
+            process.env["jwt-secret"],
             { expiresIn: "1h" }
         );
         res.json({
@@ -176,8 +180,60 @@ app.post("/login", async (req, res) => {
             }
         });
     } catch (erro) {
+        if (erro.name === "TokenExpiredError") {
+            return res.status(401).json({ error: "TokenExpiredError", message: "JWT Expired" })
+        }
         console.error(erro);
         res.status(500).json({ erro: "Erro no servidor" });
+    }
+});
+
+app.get("/productsSold/:idSale", async (req, res) => {
+    const { idSale } = req.params;
+
+    const sql = `
+            SELECT item_venda.idItem, item_venda.idVenda, produtos.nome, item_venda.quantidade, item_venda.preco
+            FROM item_venda
+            INNER JOIN produtos ON produtos.idProduto = item_venda.idProduto
+            WHERE idVenda = ?
+        `;
+
+    const [products] = await conn.query(sql, [idSale]);
+    res.send(products);
+})
+
+app.post("/register", async (req, res) => {
+    try {
+        const { name, email, cpfNumbers, telephoneNumbers, password } = req.body;
+
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        const sqlQuery = "SELECT * FROM usuarios WHERE cpf = ? OR telefone = ? OR email = ?";
+        const [resultQuery] = await conn.query(sqlQuery, [cpfNumbers, telephoneNumbers, email]);
+
+        console.log("Telefone recebido:", telephoneNumbers);
+        console.log("Resultado do banco:", resultQuery);
+        if (resultQuery.length > 0) {
+            const user = resultQuery[0];
+            if (user.cpf === cpfNumbers) {
+                return res.status(409).json({ error: "CPF já cadastrado" });
+            }
+            if (user.telefone === telephoneNumbers) {
+                return res.status(409).json({ error: "Telefone já cadastrado" });
+            }
+            if (user.email === email) {
+                return res.status(409).json({ error: "E-mail já cadastrado" });
+            }
+        }
+        const sqlRegister = "INSERT INTO usuarios(nome, cpf, email, telefone, senha) VALUES (?, ?, ?, ?, ?)";
+
+        const response = await conn.query(sqlRegister, [name, cpfNumbers, email, telephoneNumbers, passwordHash]);
+
+        res.status(201).json({
+            mensagem: "Usuário cadastrado com sucesso!",
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Erro no servidor" });
     }
 });
 

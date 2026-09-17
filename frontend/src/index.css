@@ -1,11 +1,14 @@
-:root{
+:root {
   --bg-color: #ddd;
   --menu: #468f46;
   --btn-color: #266231;
   --bg-card: #fff;
   --cart-card: hsl(0, 2%, 90%);
+  --logo: url(public/logo.png);
+  --background: url("/supermarket.png") center / cover no-repeat fixed;
 }
-*{
+
+* {
   margin: 0;
   padding: 0;
   font-family: Arial, Helvetica, sans-serif;

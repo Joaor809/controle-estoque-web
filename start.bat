@@ -2,3 +2,4 @@
 
 start cmd /k "cd /d C:\Users\joaor\OneDrive\Desktop\controle-estoque\backend && npm start"
 start cmd /k "cd /d C:\Users\joaor\OneDrive\Desktop\controle-estoque\frontend && npm run dev"
+start http://localhost:5173
