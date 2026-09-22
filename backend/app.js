@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import conn from "./db.js";
 import jwt from "jsonwebtoken";
 import bcrypt, { hash } from "bcrypt";
+import verifyToken from "./middleware/verifyToken.js";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/category", async (req, res) => {
+app.get("/category", verifyToken, async (req, res) => {
     try {
         const [response] = await conn.query("SELECT * FROM categorias");
         res.json(response);
@@ -22,7 +23,7 @@ app.get("/category", async (req, res) => {
     }
 });
 
-app.get("/products", async (req, res) => {
+app.get("/products", verifyToken, async (req, res) => {
     try {
         const sql = `
                 SELECT p.idProduto, p.nome, p.marca, c.nome AS categoria, p.preco, p.quantidade
@@ -38,7 +39,7 @@ app.get("/products", async (req, res) => {
     }
 });
 
-app.get("/products/search/:nameProduct", async (req, res) => {
+app.get("/products/search/:nameProduct", verifyToken, async (req, res) => {
     try {
         const { nameProduct } = req.params;
         const sql = `
@@ -55,7 +56,7 @@ app.get("/products/search/:nameProduct", async (req, res) => {
     }
 });
 
-app.post("/products", async (req, res) => {
+app.post("/products", verifyToken, async (req, res) => {
     try {
         const { name, mark, price, amount, category } = req.body;
 
@@ -76,7 +77,7 @@ app.post("/products", async (req, res) => {
     }
 });
 
-app.put("/products/:id", async (req, res) => {
+app.put("/products/:id", verifyToken, async (req, res) => {
     try {
         const { id } = req.params;
         const { price, amount } = req.body;
@@ -100,17 +101,17 @@ app.put("/products/:id", async (req, res) => {
     }
 });
 
-app.get("/quantityProducts", async (req, res) => {
+app.get("/quantityProducts", verifyToken, async (req, res) => {
     const [result] = await conn.query("SELECT COUNT(*) AS quantidade FROM produtos");
     res.json(result[0].quantidade);
 });
 
-app.get("/lowQuantityProducts", async (req, res) => {
+app.get("/lowQuantityProducts", verifyToken, async (req, res) => {
     const [result] = await conn.query("SELECT COUNT(*) AS quantidade FROM produtos WHERE quantidade <= 40");
     res.json(result[0].quantidade);
 });
 
-app.post("/sales", async (req, res) => {
+app.post("/sales", verifyToken, async (req, res) => {
     const { products, totalPrice } = req.body;
     try {
         const [sale] = await conn.query("INSERT INTO vendas(valorTotal) VALUES (?)", [totalPrice]);
@@ -133,7 +134,7 @@ app.post("/sales", async (req, res) => {
     }
 });
 
-app.get("/sales", async (req, res) => {
+app.get("/sales", verifyToken, async (req, res) => {
     try {
         const [sales] = await conn.query("SELECT idVenda, data, valorTotal FROM vendas ORDER BY data DESC");
         res.json(sales);
@@ -141,7 +142,7 @@ app.get("/sales", async (req, res) => {
         res.json([])
     }
 });
-app.get("/quantitySales", async (req, res) => {
+app.get("/quantitySales", verifyToken, async (req, res) => {
     const [salesQuantity] = await conn.query("SELECT COUNT(*) AS quantidade FROM vendas");
     res.json(salesQuantity[0].quantidade)
 })
@@ -188,7 +189,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/productsSold/:idSale", async (req, res) => {
+app.get("/productsSold/:idSale", verifyToken, async (req, res) => {
     const { idSale } = req.params;
 
     const sql = `
