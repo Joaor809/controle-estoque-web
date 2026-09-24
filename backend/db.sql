@@ -1,47 +1,47 @@
-create database mercearia_web;
-use mercearia_web;
+create database store;
+use store;
 
-create table categorias(
-    idCategoria int auto_increment primary key,
-    nome varchar(30) unique not null
+create table categorys(
+    idCategory int auto_increment primary key,
+    name varchar(30) unique not null
 );
 
-create table produtos(
-    idProduto int auto_increment primary key,
-    nome varchar(100) not null,
-    marca varchar(50) not null,
-    idCategoria int not null,
-    preco decimal(10,2) not null,
-    quantidade int not null,
-    foreign key (idCategoria) references categorias (idCategoria)
+create table products(
+    idProduct int auto_increment primary key,
+    name varchar(100) not null,
+    mark varchar(50) not null,
+    idCategory int not null,
+    price decimal(10,2) not null,
+    quantity int not null,
+    foreign key (idCategory) references categorys (idCategory)
 );
 
-create table vendas(
-    idVenda int auto_increment primary key,
-    data timestamp default current_timestamp,
-    valorTotal decimal(10,2) not null
+create table sales(
+    idSale int auto_increment primary key,
+    date timestamp default current_timestamp,
+    totalValue decimal(10,2) not null
 );
 
-create table item_venda(
+create table item_sale(
     idItem int auto_increment primary key,
-    idVenda int not null,
-    idProduto int not null,
-    quantidade int not null,
-    preco decimal(10,2) not null,
-    foreign key (idVenda) references vendas(idVenda),
-    foreign key (idProduto) references produtos(idProduto)
+    idSale int not null,
+    idProduct int not null,
+    quantity int not null,
+    price decimal(10,2) not null,
+    foreign key (idSale) references sales(idSale),
+    foreign key (idProduct) references products(idProduct)
 );
 
-create table usuarios(
-    idUsuario int auto_increment primary key,
-    nome varchar(150) not null,
+create table users(
+    idUser int auto_increment primary key,
+    name varchar(150) not null,
     cpf char(11) not null,
     email varchar(150) not null,
-    telefone varchar(20) not null,
-    senha varchar(150) not null
+    telephone varchar(20) not null,
+    password varchar(150) not null
 );
 
-INSERT INTO categorias (nome) VALUES
+INSERT INTO categorys (name) VALUES
 ('Alimentos'),
 ('Bebidas'),
 ('Laticínios'),
@@ -63,7 +63,7 @@ INSERT INTO categorias (nome) VALUES
 ('Utilidades Domésticas'),
 ('Outros');
 
-INSERT INTO produtos (nome, marca, idCategoria, preco, quantidade) VALUES
+INSERT INTO products (name, mark, idCategory, price, quantity) VALUES
 ('Arroz 5kg', 'Camil', 1, 28.90, 35),
 ('Feijão Carioca 1kg', 'Kicaldo', 1, 8.99, 42),
 ('Açúcar 1kg', 'União', 1, 4.79, 30),
@@ -132,31 +132,35 @@ INSERT INTO produtos (nome, marca, idCategoria, preco, quantidade) VALUES
 ('Carvão Vegetal 3kg', 'Carvão Brasil', 20, 15.90, 10),
 ('Fósforo 10 Caixas', 'Fiat Lux', 20, 4.49, 25);
 
-use mercearia_web;
-desc item_venda;
+insert into users(name, cpf, email, telephone, password) values ("João Rafael Jerônimo Barrionuevo", "18125054693", "joaorafael14102009@gmail.com", "35991063284", "18125054693");
 
-select item_venda.idVenda, produtos.nome, item_venda.quantidade, item_venda.preco
-from item_venda
-inner join produtos on produtos.idProduto = item_venda.idProduto;
+use store;
+desc item_sale;
+
+select item_sale.idSale, products.name, item_sale.quantity, item_sale.price
+from item_sale
+inner join products on products.idProduct = item_sale.idProduct;
 
 
-use mercearia_web;
-create table lotes(
-    idLote int auto_increment primary key,
-    idProduto int not null,
-    quantidade int not null,
-    dataValidade date not null,
-    foreign key (idProduto) references produtos(idProduto)
+use store;
+create table lots(
+    idLot int auto_increment primary key,
+    idProduct int not null,
+    quantity int not null,
+    expirationDate date not null,
+    foreign key (idProduct) references products(idProduct)
 );
 
-desc lotes;
-insert into lotes (idProduto, quantidade, dataValidade) values (1, 50, "2027/09/10");
+desc lots;
+insert into lots (idProduct, quantity, expirationDate) values (1, 50, "2027/09/10");
 
 select
-lotes.idLote, produtos.nome, lotes.quantidade, lotes.dataValidade
-from lotes
-inner join produtos on produtos.idProduto = lotes.idProduto;
+lots.idLot, products.name, lots.quantity, lots.expirationDate
+from lots
+inner join products on products.idProduct = lots.idProduct;
 
 
-use mercearia_web;
-select * from usuarios;
+use store;
+select * from users;
+
+
