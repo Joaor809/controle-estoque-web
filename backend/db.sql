@@ -132,8 +132,6 @@ INSERT INTO products (name, mark, idCategory, price, quantity) VALUES
 ('Carvão Vegetal 3kg', 'Carvão Brasil', 20, 15.90, 10),
 ('Fósforo 10 Caixas', 'Fiat Lux', 20, 4.49, 25);
 
-insert into users(name, cpf, email, telephone, password) values ("João Rafael Jerônimo Barrionuevo", "18125054693", "joaorafael14102009@gmail.com", "35991063284", "18125054693");
-
 use store;
 desc item_sale;
 
@@ -163,4 +161,22 @@ inner join products on products.idProduct = lots.idProduct;
 use store;
 select * from users;
 
+select * from lots;
+desc lots;
+desc products;
 
+select lots.idLot, products.name, products.mark, products.price, categorys.name as category, lots.quantity, lots.expirationDate
+from lots
+inner join products on products.idProduct = lots.idProduct
+inner join categorys on categorys.idCategory = products.idCategory;
+
+alter table products
+drop column quantity;
+desc products;
+
+use store;
+SELECT item_sale.idItem, item_sale.idSale, products.name, item_sale.quantity, item_sale.price
+FROM item_sale
+INNER JOIN products ON products.idProduct = item_sale.idProduct;
+
+SELECT * FROM users WHERE cpf = "18125054693";

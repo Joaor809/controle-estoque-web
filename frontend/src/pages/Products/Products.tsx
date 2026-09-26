@@ -452,24 +452,20 @@ function Produtos() {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>ID PRODUTO</th>
                                     <th>NOME</th>
                                     <th>MARCA</th>
                                     <th>CATEGORIA</th>
                                     <th>PREÇO</th>
-                                    <th>QUANTIDADE</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 {products.map((product) => (
                                     <tr key={product.idProduto}>
-                                        <td>{product.idProduto}</td>
-                                        <td>{product.nome}</td>
-                                        <td>{product.marca}</td>
-                                        <td>{product.categoria}</td>
-                                        <td>R$ {product.preco}</td>
-                                        <td>{product.quantidade}</td>
+                                        <td>{product.name}</td>
+                                        <td>{product.mark}</td>
+                                        <td>{product.category}</td>
+                                        <td>R$ {product.price}</td>
                                     </tr>
                                 ))}
                             </tbody>

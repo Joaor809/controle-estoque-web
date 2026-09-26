@@ -43,7 +43,7 @@ function Login() {
 
         console.log("Salvando token...");
         console.log("Token:", data.token);
-        console.log("Usuário:", data.usuario);
+        console.log("Usuário:", data.user);
         localStorage.setItem("token", data.token);
         localStorage.setItem("usuario", JSON.stringify(data.usuario));
 

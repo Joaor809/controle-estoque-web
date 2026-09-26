@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-function verificarToken(req, res, next) {
+function verifyToken(req, res, next) {
     const authHeader = req.headers.authorization;
 
     const [tipo, token] = authHeader?.split(" ") ?? [];
@@ -18,9 +18,9 @@ function verificarToken(req, res, next) {
             throw new Error("Segredo JWT não configurado");
         }
 
-        const usuario = jwt.verify(token, segredoJwt);
+        const user = jwt.verify(token, segredoJwt);
 
-        req.usuario = usuario;
+        req.user = user;
 
         next();
     } catch (erro) {
@@ -32,4 +32,4 @@ function verificarToken(req, res, next) {
     }
 }
 
-export default verificarToken;
+export default verifyToken;
