@@ -5,7 +5,7 @@ import "./Sell.css";
 import { useEffect, useState } from "react";
 import deleteToken from "../../services/deleteToken";
 
-function Vendas() {
+function Sell() {
     const [products, setProducts] = useState([]);
     const [idProduct, setIdProduct] = useState("");
     const [amount, setAmount] = useState("");
@@ -30,7 +30,7 @@ function Vendas() {
 
     function addToCart() {
         const product = products.find(
-            product => product.idProduto === Number(idProduct)
+            product => product.idProduct === Number(idProduct)
         );
 
         if (!product) {
@@ -41,14 +41,14 @@ function Vendas() {
             alert("Quantidade inválida");
             return;
         }
-        if (Number(amount) > product.quantidade) {
+        if (Number(amount) > product.quantity) {
             alert("Quantidade maior que o estoque!");
             return;
         }
         const item = {
-            idProduto: product.idProduto,
-            nome: product.nome,
-            preco: product.preco * Number(amount),
+            idProduto: product.idProduct,
+            nome: product.name,
+            preco: product.price * Number(amount),
             quantidade: Number(amount)
         }
         setCart([...cart, item]);
@@ -91,7 +91,7 @@ function Vendas() {
     }, [])
     useEffect(() => {
         const newTotal = cart.reduce(
-            (total, product) => total + Number(product.preco),
+            (total, product) => total + Number(product.price),
             0
         );
 
@@ -110,18 +110,16 @@ function Vendas() {
                             <th>MARCA</th>
                             <th>CATEGORIA</th>
                             <th>PREÇO</th>
-                            <th>QUANTIDADE</th>
                         </tr>
                     </thead>
                     <tbody>
                         {products.map((product) => (
-                            <tr key={product.idProduto}>
-                                <td>{product.idProduto}</td>
-                                <td>{product.nome}</td>
-                                <td>{product.marca}</td>
-                                <td>{product.categoria}</td>
-                                <td>R$ {product.preco}</td>
-                                <td>{product.quantidade}</td>
+                            <tr key={product.idProduct}>
+                                <td>{product.idProduct}</td>
+                                <td>{product.name}</td>
+                                <td>{product.mark}</td>
+                                <td>{product.category}</td>
+                                <td>R$ {product.price}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -130,7 +128,7 @@ function Vendas() {
             <div className="shopping-cart">
                 <div className="products-cart">
                     {cart.map((item) => (
-                        <CartCard key={item.idProduto} nameProduct={item.nome} priceProduct={item.preco.toFixed(2)} amountProduct={item.quantidade} />
+                        <CartCard key={item.idProduct} nameProduct={item.name} priceProduct={item.price.toFixed(2)} amountProduct={item.quantity} />
                     ))}
                 </div>
                 <div className="add-product">
@@ -152,4 +150,4 @@ function Vendas() {
         </div>
     );
 }
-export default Vendas;
+export default Sell;

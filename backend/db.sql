@@ -142,7 +142,7 @@ inner join products on products.idProduct = item_sale.idProduct;
 
 use store;
 create table lots(
-    idLot int auto_increment primary key,
+    codLot char(8) primary key,
     idProduct int not null,
     quantity int not null,
     expirationDate date not null,
@@ -150,10 +150,9 @@ create table lots(
 );
 
 desc lots;
-insert into lots (idProduct, quantity, expirationDate) values (1, 50, "2027/09/10");
 
 select
-lots.idLot, products.name, lots.quantity, lots.expirationDate
+lots.codLot, products.name, lots.quantity, lots.expirationDate
 from lots
 inner join products on products.idProduct = lots.idProduct;
 
@@ -165,7 +164,7 @@ select * from lots;
 desc lots;
 desc products;
 
-select lots.idLot, products.name, products.mark, products.price, categorys.name as category, lots.quantity, lots.expirationDate
+select lots.codLot, products.name, products.mark, products.price, categorys.name as category, lots.quantity, lots.expirationDate
 from lots
 inner join products on products.idProduct = lots.idProduct
 inner join categorys on categorys.idCategory = products.idCategory;
@@ -180,3 +179,14 @@ FROM item_sale
 INNER JOIN products ON products.idProduct = item_sale.idProduct;
 
 SELECT * FROM users WHERE cpf = "18125054693";
+
+SELECT p.idProduct, p.name, p.mark, c.name AS category, p.price
+FROM products p
+JOIN categorys c ON p.idCategory = c.idCategory
+ORDER BY p.idProduct;
+
+use store;
+SELECT p.idProduct, p.name, p.mark, c.name AS category, p.price
+FROM products p
+JOIN categorys c ON p.idCategory = c.idCategory
+WHERE p.name LIKE "%arro%";

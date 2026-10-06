@@ -66,7 +66,7 @@ function Produtos() {
         try {
             console.log(search);
             const response = await fetch(
-                `http://localhost:3000/products/search/${search}`,
+                `http://localhost:3000/products/search/${encodeURIComponent(search.trim())}`,
                 {
                     method: "GET",
                     headers: {
@@ -132,58 +132,8 @@ function Produtos() {
         }
     }
 
-    function initEdition(produto) {
-        setEditing(produto.idProduto);
-        setNewPrice(produto.preco);
-        setNewQuantity(produto.quantidade);
-    }
-
-    function cancelEdition() {
-        setEditing(null);
-        setNewPrice("");
-        setNewQuantity("");
-    }
-
-    async function saveEdition(idProduct) {
-        try {
-            const response = await fetch(
-                `http://localhost:3000/products/${idProduct}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        price: newPrice,
-                        amount: newQuantity
-                    })
-                }
-            );
-
-            if (deleteToken(response)) return;
-
-            if (!response.ok) {
-                throw new Error("Erro ao atualizar produto");
-            }
-
-            alert("Produto atualizado com sucesso!");
-
-            cancelEdition();
-
-            searchProducts();
-
-            if (search.trim()) {
-                searchProduct();
-            }
-        } catch (erro) {
-            console.error("Erro ao editar produto:", erro);
-        }
-    }
-
     function closeSearchModal() {
         setModalSearch(false);
-        cancelEdition();
     }
 
     useEffect(() => {
@@ -283,10 +233,10 @@ function Produtos() {
 
                                     {categorys.map((category) => (
                                         <option
-                                            key={category.idCategoria}
-                                            value={category.idCategoria}
+                                            key={category.idCategory}
+                                            value={category.idCategory}
                                         >
-                                            {category.nome}
+                                            {category.name}
                                         </option>
                                     ))}
                                 </select>
@@ -340,105 +290,28 @@ function Produtos() {
                                     resultSearch.map((product) => (
                                         <div
                                             className="resultado"
-                                            key={product.idProduto}
+                                            key={product.idProduct}
                                         >
                                             <p>
                                                 <strong>ID:</strong>{" "}
-                                                {product.idProduto}
+                                                {product.idProduct}
                                             </p>
 
                                             <p>
                                                 <strong>Nome:</strong>{" "}
-                                                {product.nome}
+                                                {product.name}
                                             </p>
 
                                             <p>
                                                 <strong>Marca:</strong>{" "}
-                                                {product.marca}
+                                                {product.mark}
                                             </p>
 
                                             <p>
                                                 <strong>Categoria:</strong>{" "}
-                                                {product.categoria}
+                                                {product.category}
                                             </p>
 
-                                            {editing === product.idProduto ? (
-                                                <>
-                                                    <div className="form-group">
-                                                        <label>Preço:</label>
-
-                                                        <input
-                                                            type="number"
-                                                            step="0.01"
-                                                            min="0"
-                                                            value={newPrice}
-                                                            onChange={(e) =>
-                                                                setNewPrice(
-                                                                    e.target.value
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-
-                                                    <div className="form-group">
-                                                        <label>
-                                                            Quantidade:
-                                                        </label>
-
-                                                        <input
-                                                            type="number"
-                                                            min="0"
-                                                            value={newQuantity}
-                                                            onChange={(e) =>
-                                                                setNewQuantity(
-                                                                    e.target.value
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-
-                                                    <Button
-                                                        btnName="Salvar"
-                                                        typeButton="button"
-                                                        onClick={() =>
-                                                            saveEdition(
-                                                                product.idProduto
-                                                            )
-                                                        }
-                                                    />
-
-                                                    <Button
-                                                        btnName="Cancelar"
-                                                        typeButton="button"
-                                                        onClick={cancelEdition}
-                                                    />
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <p>
-                                                        <strong>
-                                                            Preço:
-                                                        </strong>{" "}
-                                                        R${" "}
-                                                        {product.preco}
-                                                    </p>
-
-                                                    <p>
-                                                        <strong>
-                                                            Quantidade:
-                                                        </strong>{" "}
-                                                        {product.quantidade}
-                                                    </p>
-
-                                                    <Button
-                                                        btnName="Editar"
-                                                        typeButton="button"
-                                                        onClick={() =>
-                                                            initEdition(product)
-                                                        }
-                                                    />
-                                                </>
-                                            )}
                                         </div>
                                     ))
                                 ) : (
@@ -461,7 +334,7 @@ function Produtos() {
 
                             <tbody>
                                 {products.map((product) => (
-                                    <tr key={product.idProduto}>
+                                    <tr key={product.idProduct}>
                                         <td>{product.name}</td>
                                         <td>{product.mark}</td>
                                         <td>{product.category}</td>
