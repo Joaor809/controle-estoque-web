@@ -1,6 +1,6 @@
 import Button from "../../components/Button/Button";
 import "./Login.css";
-import { useState } from "react";
+import React, { useState } from "react";
 
 function Login() {
     const [cpf, setCpf] = useState("");
@@ -18,12 +18,12 @@ function Login() {
         setCpf(valor);
     }
 
-    async function login(event) {
+    async function login(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const cpfNumbers = cpf.replace(/\D/g, "");
 
-        const response = await fetch("http://localhost:3000/login", {
+        const response = await fetch("https://api.joaor809.online/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -38,6 +38,7 @@ function Login() {
 
         if (!response.ok) {
             alert(data.erro);
+            setPassword("")
             return;
         }
 
@@ -45,7 +46,7 @@ function Login() {
         console.log("Token:", data.token);
         console.log("Usuário:", data.user);
         localStorage.setItem("token", data.token);
-        localStorage.setItem("usuario", JSON.stringify(data.usuario));
+        localStorage.setItem("user", JSON.stringify(data.user));
 
         window.location.href = "/";
     }

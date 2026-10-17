@@ -11,6 +11,7 @@ function Menu(){
             <div className="nav-links">
                 <ButtonLink linkRoute="/" btnName="Início"/>
                 <ButtonLink linkRoute="/products" btnName="Produtos"/>
+                <ButtonLink linkRoute="/lots" btnName="Lotes"/>
                 <ButtonLink linkRoute="/sell" btnName="Vender"/>
                 <ButtonLink linkRoute="/sales" btnName="Relatório de vendas"/>
                 <ButtonLink btnName="Sair" onClick={() => setOpenModalLogout(true)}/>

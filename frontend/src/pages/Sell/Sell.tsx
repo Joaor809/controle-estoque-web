@@ -8,7 +8,7 @@ import deleteToken from "../../services/deleteToken";
 function Sell() {
     const [products, setProducts] = useState([]);
     const [idProduct, setIdProduct] = useState("");
-    const [amount, setAmount] = useState("");
+    const [quantity, setQuantity] = useState("");
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
 
@@ -30,26 +30,26 @@ function Sell() {
 
     function addToCart() {
         const product = products.find(
-            product => product.idProduct === Number(idProduct)
+            product => product.codProduct === string(codProduct)
         );
 
         if (!product) {
             alert("Produto não encontrado!");
             return;
         }
-        if (Number(amount) <= 0) {
+        if (Number(quantity) <= 0) {
             alert("Quantidade inválida");
             return;
         }
-        if (Number(amount) > product.quantity) {
+        if (Number(quantity) > product.quantity) {
             alert("Quantidade maior que o estoque!");
             return;
         }
         const item = {
-            idProduto: product.idProduct,
+            idProduto: product.codProduct,
             nome: product.name,
-            preco: product.price * Number(amount),
-            quantidade: Number(amount)
+            preco: product.price * Number(quantity),
+            quantidade: Number(quantity)
         }
         setCart([...cart, item]);
         setIdProduct("");

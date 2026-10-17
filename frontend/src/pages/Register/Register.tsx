@@ -41,7 +41,7 @@ function Register() {
             const confirmation = confirm("Você deseja mesmo cadastrar um novo usuário?")
 
             if (confirmation) {
-                const response = await fetch("http://localhost:3000/register", {
+                const response = await fetch("https://api.joaor809.online/register", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

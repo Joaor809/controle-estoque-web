@@ -1,8 +1,9 @@
 import "./Products.css";
 import Menu from "../../components/Menu/Menu";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import deleteToken from "../../services/deleteToken";
+import generateCod from "../../services/generateCod";
 
 function Produtos() {
     const [openModal, setOpenModal] = useState(false);
@@ -11,13 +12,13 @@ function Produtos() {
     const [categorys, setCategorys] = useState([]);
     const [products, setProducts] = useState([]);
     const [resultSearch, setResultSearch] = useState(null);
-
+    
     const [search, setSearch] = useState("");
-
+    
+    const [codProduct, setCodProduct] = useState("");
     const [name, setName] = useState("");
     const [mark, setMark] = useState("");
     const [price, setPrice] = useState("");
-    const [amount, setAmount] = useState(0);
     const [category, setCategory] = useState("");
 
     const [editing, setEditing] = useState(null);
@@ -28,7 +29,7 @@ function Produtos() {
 
     async function searchCategory() {
         try {
-            const response = await fetch("http://localhost:3000/category", {
+            const response = await fetch("https://api.joaor809.online/categorys", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -45,7 +46,7 @@ function Produtos() {
 
     async function searchProducts() {
         try {
-            const response = await fetch("http://localhost:3000/products", {
+            const response = await fetch("https://api.joaor809.online/products", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -66,7 +67,7 @@ function Produtos() {
         try {
             console.log(search);
             const response = await fetch(
-                `http://localhost:3000/products/search/${encodeURIComponent(search.trim())}`,
+                `https://api.joaor809.online/products/search/${encodeURIComponent(search.trim())}`,
                 {
                     method: "GET",
                     headers: {
@@ -91,21 +92,22 @@ function Produtos() {
         }
     }
 
-    async function registerProduct(event) {
+    async function registerProduct(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:3000/products", {
+            const codProduct: string = generateCodProduct(10000, 90000);
+            const response = await fetch("https://api.joaor809.online/products", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({
+                    codProduct,
                     name,
                     mark,
                     price,
-                    amount,
                     category
                 })
             });
@@ -121,7 +123,6 @@ function Produtos() {
             setName("");
             setMark("");
             setPrice("");
-            setAmount(0);
             setCategory("");
 
             setOpenModal(false);
@@ -161,7 +162,7 @@ function Produtos() {
                 {openModal && (
                     <div className="modal-form">
                         <form onSubmit={registerProduct}>
-                            <div className="modal-form-info">
+                            <div className="btn-close">
                                 <h3>Novo produto</h3>
 
                                 <Button
@@ -208,18 +209,6 @@ function Produtos() {
                             </div>
 
                             <div className="form-group">
-                                <label>Digite a quantidade do produto:</label>
-
-                                <input
-                                    type="number"
-                                    min="0"
-                                    value={amount}
-                                    onChange={(e) => setAmount(e.target.value)}
-                                    required
-                                />
-                            </div>
-
-                            <div className="form-group">
                                 <label>Digite a categoria do produto:</label>
 
                                 <select
@@ -243,6 +232,7 @@ function Produtos() {
                             </div>
 
                             <Button
+                                className="btnRegister"
                                 typeButton="submit"
                                 btnName="Registrar"
                             />
@@ -288,30 +278,23 @@ function Produtos() {
 
                                 {resultSearch?.length > 0 ? (
                                     resultSearch.map((product) => (
-                                        <div
-                                            className="resultado"
-                                            key={product.idProduct}
-                                        >
+                                        <div className="resultado" key={product.codProduct}>
                                             <p>
-                                                <strong>ID:</strong>{" "}
-                                                {product.idProduct}
+                                                <strong>Código do Produto:</strong>{" "}
+                                                {product.codProduct}
                                             </p>
-
                                             <p>
                                                 <strong>Nome:</strong>{" "}
                                                 {product.name}
                                             </p>
-
                                             <p>
                                                 <strong>Marca:</strong>{" "}
                                                 {product.mark}
                                             </p>
-
                                             <p>
                                                 <strong>Categoria:</strong>{" "}
                                                 {product.category}
                                             </p>
-
                                         </div>
                                     ))
                                 ) : (
@@ -325,6 +308,7 @@ function Produtos() {
                         <table>
                             <thead>
                                 <tr>
+                                    <th>CÓDIGO DO PRODUTO</th>
                                     <th>NOME</th>
                                     <th>MARCA</th>
                                     <th>CATEGORIA</th>
@@ -334,7 +318,8 @@ function Produtos() {
 
                             <tbody>
                                 {products.map((product) => (
-                                    <tr key={product.idProduct}>
+                                    <tr key={product.codProduct}>
+                                        <td><strong>{product.codProduct}</strong></td>
                                         <td>{product.name}</td>
                                         <td>{product.mark}</td>
                                         <td>{product.category}</td>

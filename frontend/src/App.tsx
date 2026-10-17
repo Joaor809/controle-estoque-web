@@ -7,6 +7,7 @@ import Login from "./pages/Login/Login";
 import PrivateRoute from "./Routes/PrivateRoute";
 import Register from "./pages/Register/Register";
 import Menu from "./components/Menu/Menu";
+import Lots from "./pages/Lots/Lots";
 
 function App(){
   return(
@@ -14,6 +15,7 @@ function App(){
           <Routes>
               <Route path="/" element={<PrivateRoute><Dashboard/></PrivateRoute>}></Route>
               <Route path="/products" element={<PrivateRoute><Products/></PrivateRoute>}></Route>
+              <Route path="/lots" element={<PrivateRoute><Lots/></PrivateRoute>}></Route>
               <Route path="/sell" element={<PrivateRoute><Sell/></PrivateRoute>}></Route>
               <Route path="/sales" element={<PrivateRoute><Sales/></PrivateRoute>}></Route>
               <Route path="/register" element={<Register/>}></Route>

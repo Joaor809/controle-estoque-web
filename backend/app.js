@@ -10,10 +10,14 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "https://app.joaor809.online",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
-app.get("/category", verifyToken, async (req, res) => {
+app.get("/categorys", async (req, res) => {
     try {
         const [response] = await conn.query("SELECT * FROM categorys");
         res.json(response);
@@ -23,13 +27,13 @@ app.get("/category", verifyToken, async (req, res) => {
     }
 });
 
-app.get("/products", verifyToken, async (req, res) => {
+app.get("/products", async (req, res) => {
     try {
         const sql = `
-                SELECT p.idProduct, p.name, p.mark, c.name AS category, p.price
+                SELECT p.codProduct, p.name, p.mark, c.name AS category, p.price
                 FROM products p
                 JOIN categorys c ON p.idCategory = c.idCategory
-                ORDER BY p.idProduct
+                ORDER BY p.codProduct
             `;
         const [response] = await conn.query(sql);
         res.json(response);
@@ -39,11 +43,11 @@ app.get("/products", verifyToken, async (req, res) => {
     }
 });
 
-app.get("/products/search/:nameProduct", verifyToken, async (req, res) => {
+app.get("/products/search/:nameProduct", async (req, res) => {
     try {
         const { nameProduct } = req.params;
         const sql = `
-                SELECT p.idProduct, p.name, p.mark, c.name AS category, p.price
+                SELECT p.codProduct, p.name, p.mark, c.name AS category, p.price
                 FROM products p
                 JOIN categorys c ON p.idCategory = c.idCategory
                 WHERE p.name LIKE ?
@@ -56,16 +60,16 @@ app.get("/products/search/:nameProduct", verifyToken, async (req, res) => {
     }
 });
 
-app.post("/products", verifyToken, async (req, res) => {
+app.post("/products", async (req, res) => {
     try {
-        const { name, mark, price, amount, category } = req.body;
+        const { codProduct, name, mark, price, category } = req.body;
 
         const sql = `
-                INSERT INTO products (name, mark, price, idCategory)
+                INSERT INTO products (codProduct, name, mark, price, idCategory)
                 VALUES (?, ?, ?, ?, ?)
             `;
 
-        const [result] = await conn.query(sql, [name, mark, price, category]);
+        const [result] = await conn.query(sql, [codProduct, name, mark, price, category]);
 
         res.status(201).json({
             mensagem: "Produto cadastrado com sucesso",
@@ -77,7 +81,7 @@ app.post("/products", verifyToken, async (req, res) => {
     }
 });
 
-app.post("/sales", verifyToken, async (req, res) => {
+app.post("/sales", async (req, res) => {
     const { products, totalPrice } = req.body;
     try {
         const [sale] = await conn.query("INSERT INTO sales(totalValue) VALUES (?)", [totalPrice]);
@@ -100,7 +104,7 @@ app.post("/sales", verifyToken, async (req, res) => {
     }
 });
 
-app.get("/sales", verifyToken, async (req, res) => {
+app.get("/sales", async (req, res) => {
     try {
         const [sales] = await conn.query("SELECT idSale, date, totalValue FROM sales ORDER BY date DESC");
         res.json(sales);
@@ -108,12 +112,13 @@ app.get("/sales", verifyToken, async (req, res) => {
         res.json([])
     }
 });
-app.get("/quantitySales", verifyToken, async (req, res) => {
+app.get("/quantitySales", async (req, res) => {
     const [salesQuantity] = await conn.query("SELECT COUNT(*) AS quantity FROM sales");
     res.json(salesQuantity[0].quantidade)
 })
 
 app.post("/login", async (req, res) => {
+    console.log("Login recebido");
     try {
         const { cpfNumbers, password } = req.body;
 
@@ -131,7 +136,7 @@ app.post("/login", async (req, res) => {
         }
         const token = jwt.sign(
             { id: user.idUser },
-            process.env["jwt-secret"],
+            process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
         res.json({
@@ -155,7 +160,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/productsSold/:idSale", verifyToken, async (req, res) => {
+app.get("/productsSold/:idSale", async (req, res) => {
     const { idSale } = req.params;
 
     const sql = `
@@ -204,6 +209,6 @@ app.post("/register", async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
+app.listen(3000, "0.0.0.0",() => {
     console.log("Servidor rodando na porta 3000");
 });

@@ -1,5 +1,5 @@
 export default function sair() {
     localStorage.removeItem('token');
-    localStorage.removeItem('usuario');
+    localStorage.removeItem('user');
     window.location.replace('/login');
 }

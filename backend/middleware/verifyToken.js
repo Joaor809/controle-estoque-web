@@ -12,7 +12,7 @@ function verifyToken(req, res, next) {
     }
 
     try {
-        const segredoJwt = process.env["jwt-secret"];
+        const segredoJwt = process.env.JWT_SECRET;
 
         if (!segredoJwt) {
             throw new Error("Segredo JWT não configurado");
